@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomLocationComponent" parent="Theme.MyTaxi">
+        <item name="mapbox_locationComponentLocationPuckLocationPuck2DTopImage">
+            @drawable/ic_yellow_taxi
+        </item>
+        <item name="mapbox_locationComponentLocationPuckLocationPuck2DBearingImage">
+            @drawable/ic_yellow_taxi
+        </item>
+        <item name="mapbox_locationComponentLocationPuckLocationPuck2DShadowImage">
+            @drawable/ic_yellow_taxi
+        </item>
+    </style>
+
+    <style name="GradientFBA" parent="Widget.Design.FloatingActionButton">
+        <!---rest of your style-->
+        <item name="android:foreground">@drawable/dark_gradient</item>
+    </style>
+
+
+</resources>

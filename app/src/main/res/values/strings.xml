@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MyTaxi</string>
+    <string name="mapbox_access_token">sk.eyJ1IjoicmV0cm9maXQiLCJhIjoiY2xmMWJ6ZDBuMDZ4ZDN6cG5oYnU1enV4eCJ9.20omdl3ZFrczxMLinpEguQ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="border">Бордюр</string>
+    <string name="tarif">Тарифы</string>
+    <string name="order">Зазказы</string>
+
+</resources>
