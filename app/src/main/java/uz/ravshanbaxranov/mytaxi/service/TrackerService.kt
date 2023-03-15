@@ -128,8 +128,7 @@ class TrackerService : LifecycleService() {
     @SuppressLint("MissingPermission")
     private fun startUpdateLocation() {
 
-        val locationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, LOCATION_UPDATE_INTERVAL)
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, LOCATION_UPDATE_INTERVAL)
                 .setWaitForAccurateLocation(true)
                 .setMinUpdateIntervalMillis(LOCATION_UPDATE_MINIMUM_INTERVAL)
                 .setMaxUpdateDelayMillis(LOCATION_UPDATE_MAXIMUM_INTERVAL)
@@ -143,7 +142,6 @@ class TrackerService : LifecycleService() {
         )
 
     }
-
 
     private fun createNotificationManagerChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

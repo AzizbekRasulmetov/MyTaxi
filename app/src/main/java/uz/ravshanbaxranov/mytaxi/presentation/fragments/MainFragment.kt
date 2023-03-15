@@ -2,18 +2,19 @@ package uz.ravshanbaxranov.mytaxi.presentation.fragments
 
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.mapbox.android.core.location.LocationEngineCallback
@@ -41,6 +42,7 @@ import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_START
 import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_STOP
 import uz.ravshanbaxranov.mytaxi.util.Constants.PERMISSION_BACKGROUND_LOCATION_REQUEST_CODE
 import uz.ravshanbaxranov.mytaxi.util.Constants.PERMISSION_LOCATION_REQUEST_CODE
+import uz.ravshanbaxranov.mytaxi.util.Constants.REQUEST_CHECK_SETTINGS
 import uz.ravshanbaxranov.mytaxi.util.Permissions.checkBackgroundLocationPermission
 import uz.ravshanbaxranov.mytaxi.util.Permissions.checkLocationAndNotificationPermissions
 import uz.ravshanbaxranov.mytaxi.util.Permissions.hasBackgroundLocationPermission
@@ -101,7 +103,6 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
         if (hasBackgroundLocationPermission(requireContext())) {
             checkGpsStatus()
         }
-
 
 
     }
@@ -175,27 +176,28 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
     }
 
     private fun checkGpsStatus() {
-        val manager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        if (!manager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps()
-        }
-    }
 
-    private fun buildAlertMessageNoGps() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-            .setCancelable(false)
-            .setPositiveButton("Yes") { _, _ ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.cancel()
-            }
-        val alert = builder.create()
-        alert.show()
-    }
+        val settingsClient = LocationServices.getSettingsClient(requireContext())
+        val locationSettingsRequest = LocationSettingsRequest.Builder()
+            .addLocationRequest(LocationRequest.create())
+            .setAlwaysShow(true)
+            .build()
 
+
+        settingsClient.checkLocationSettings(locationSettingsRequest)
+            .addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    try {
+                        exception.startResolutionForResult(
+                            requireActivity(),
+                            REQUEST_CHECK_SETTINGS
+                        )
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error
+                    }
+                }
+            }
+    }
 
     @SuppressLint("MissingPermission")
     private fun animateToLocation() {
@@ -218,6 +220,8 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
         })
     }
 
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -226,7 +230,6 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
-
 
 
 }

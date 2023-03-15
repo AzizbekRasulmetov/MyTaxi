@@ -2,8 +2,6 @@ package uz.ravshanbaxranov.mytaxi.util
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
-
 
 
 fun isNightModeEnabled(context: Context): Boolean {
