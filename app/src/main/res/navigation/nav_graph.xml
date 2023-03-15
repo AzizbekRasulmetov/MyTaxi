@@ -3,12 +3,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/mapFragment">
+    app:startDestination="@id/splashFragment">
+
+
+    <action
+        android:id="@+id/action_global_mapFragment"
+        app:destination="@id/mapFragment"
+        app:popUpTo="@id/nav_graph.xml"
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="uz.ravshanbaxranov.mytaxi.presentation.fragments.MapFragment"
+        android:name="uz.ravshanbaxranov.mytaxi.presentation.fragments.MainFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/onboardParentFragment"
+        android:name="uz.ravshanbaxranov.mytaxi.presentation.fragments.OnboardParentFragment"
+        android:label="OnboardParentFragment"
+        tools:layout="@layout/fragment_onboarding_parent">
+        <action
+            android:id="@+id/action_onboardParentFragment_to_mainFragment"
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/nav_graph.xml"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="uz.ravshanbaxranov.mytaxi.presentation.fragments.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_onboardParentFragment"
+            app:destination="@id/onboardParentFragment"
+            app:popUpTo="@id/nav_graph.xml"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_mainFragment"
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/nav_graph.xml"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

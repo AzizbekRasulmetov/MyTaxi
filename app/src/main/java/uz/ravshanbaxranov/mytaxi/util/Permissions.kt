@@ -12,7 +12,6 @@ import uz.ravshanbaxranov.mytaxi.util.Constants.PERMISSION_LOCATION_REQUEST_CODE
 object Permissions {
 
 
-
     fun checkLocationAndNotificationPermissions(context: Context, fragment: Fragment) {
         if (hasLocationAndNotificationPermission(context)) {
             return

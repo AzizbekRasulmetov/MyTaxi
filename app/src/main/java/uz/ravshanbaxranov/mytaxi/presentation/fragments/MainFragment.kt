@@ -11,10 +11,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
@@ -36,12 +34,8 @@ import com.mapbox.maps.plugin.scalebar.scalebar
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import uz.ravshanbaxranov.mytaxi.R
-import uz.ravshanbaxranov.mytaxi.data.model.Track
-import uz.ravshanbaxranov.mytaxi.databinding.FragmentMapBinding
-import uz.ravshanbaxranov.mytaxi.presentation.viewmodel.MapViewModel
+import uz.ravshanbaxranov.mytaxi.databinding.FragmentMainBinding
 import uz.ravshanbaxranov.mytaxi.service.TrackerService
 import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_START
 import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_STOP
@@ -51,16 +45,14 @@ import uz.ravshanbaxranov.mytaxi.util.Permissions.checkBackgroundLocationPermiss
 import uz.ravshanbaxranov.mytaxi.util.Permissions.checkLocationAndNotificationPermissions
 import uz.ravshanbaxranov.mytaxi.util.Permissions.hasBackgroundLocationPermission
 import uz.ravshanbaxranov.mytaxi.util.Permissions.hasLocationAndNotificationPermission
-import uz.ravshanbaxranov.mytaxi.util.isDarkTheme
-import uz.ravshanbaxranov.mytaxi.util.showLog
+import uz.ravshanbaxranov.mytaxi.util.isNightModeEnabled
 
 @AndroidEntryPoint
-class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionCallbacks {
+class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.PermissionCallbacks {
 
     private lateinit var mapView: MapView
     private lateinit var mapboxMap: MapboxMap
-    private val binding by viewBinding(FragmentMapBinding::bind)
-    private val viewModel: MapViewModel by viewModels()
+    private val binding by viewBinding(FragmentMainBinding::bind)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,22 +60,7 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
         mapView = binding.mapView
         mapboxMap = mapView.getMapboxMap()
 
-        if (isDarkTheme(requireContext())) {
-            mapView.getMapboxMap().loadStyleUri(Style.DARK)
-        } else {
-            mapView.getMapboxMap().loadStyleUri(Style.OUTDOORS)
-        }
-
-        lifecycleScope.launchWhenCreated {
-            TrackerService.locationChannel.asSharedFlow().collect {
-//                viewModel.addTrackToDatabase(
-//                    Track(
-//                        latitude = it.latitude(),
-//                        longitude = it.longitude()
-//                    )
-//                )
-            }
-        }
+        setUpMapAndUI()
 
         binding.myLocationBtn.setOnClickListener {
             animateToLocation()
@@ -104,24 +81,41 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
             mapboxMap.easeTo(zoomInCameraOptions)
         }
 
+        binding.menuBtn.setOnClickListener {
+            binding.root.openDrawer(GravityCompat.START)
+        }
+
+        binding.busyRb.setOnClickListener {
+            sendServiceAction(ACTION_SERVICE_STOP)
+        }
+
+        binding.freeRb.setOnClickListener {
+            sendServiceAction(ACTION_SERVICE_START)
+        }
+
         checkLocationAndNotificationPermissions(requireContext(), this)
 
-        if (hasBackgroundLocationPermission(requireContext())) {
-            checkGpsStatus()
-        }
         if (hasLocationAndNotificationPermission(requireContext())) {
             checkBackgroundLocationPermission(requireContext(), this)
         }
+        if (hasBackgroundLocationPermission(requireContext())) {
+            checkGpsStatus()
+        }
 
-        initialViews()
 
 
     }
 
 
     @SuppressLint("UnsafeOptInUsageError")
-    private fun initialViews() {
+    private fun setUpMapAndUI() {
 
+
+        if (isNightModeEnabled(requireContext())) {
+            mapView.getMapboxMap().loadStyleUri(Style.DARK)
+        } else {
+            mapView.getMapboxMap().loadStyleUri(Style.OUTDOORS)
+        }
 
         mapView.apply {
             scalebar.enabled = false
@@ -139,46 +133,19 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
                 )
             }
         }
-        binding.notificationBtn.post {
-            val badgeDrawable = BadgeDrawable.create(requireContext())
-            badgeDrawable.number = 1
-            BadgeUtils.attachBadgeDrawable(
-                badgeDrawable,
-                binding.notificationBtn
-            )
-        }
-        binding.stateRg.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.busy_rb -> {
-                    sendServiceAction(ACTION_SERVICE_STOP)
-                    binding.busyRb.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.white
-                        )
-                    )
-                    binding.freeRb.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.solid_dark
-                        )
-                    )
-                }
-                R.id.free_rb -> {
-                    sendServiceAction(ACTION_SERVICE_START)
 
-                    binding.busyRb.setTextColor(
-                        ContextCompat.getColor(requireContext(), R.color.solid_dark)
-                    )
-                    binding.freeRb.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.white
-                        )
-                    )
-                }
+        binding.notificationBtn.post {
+            val badgeDrawable = BadgeDrawable.create(requireContext()).apply {
+                number = 3
             }
+            BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.notificationBtn)
         }
+
+
+        binding.busyRb.isChecked = !TrackerService.isServiceRunning
+        binding.freeRb.isChecked = TrackerService.isServiceRunning
+
+
     }
 
 
@@ -215,7 +182,6 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
         }
     }
 
-
     private fun buildAlertMessageNoGps() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
@@ -248,7 +214,6 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
             }
 
             override fun onFailure(exception: Exception) {
-                showLog(exception.message.toString())
             }
         })
     }
@@ -261,4 +226,7 @@ class MapFragment : Fragment(R.layout.fragment_map), EasyPermissions.PermissionC
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
+
+
+
 }

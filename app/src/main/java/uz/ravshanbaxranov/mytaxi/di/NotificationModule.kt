@@ -35,14 +35,18 @@ object NotificationModule {
             PendingIntent.getActivity(
                 context,
                 PENDING_INTENT_REQUEST_CODE,
-                Intent(context, MainActivity::class.java),
+                Intent(context, MainActivity::class.java).also {
+                    it.action = Constants.ACTION_SHOW_TRACKING_FRAGMENT
+                },
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getActivity(
                 context,
                 PENDING_INTENT_REQUEST_CODE,
-                Intent(context, MainActivity::class.java),
+                Intent(context, MainActivity::class.java).also {
+                    it.action = Constants.ACTION_SHOW_TRACKING_FRAGMENT
+                },
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
         }

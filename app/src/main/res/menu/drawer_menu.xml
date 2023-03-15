@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/trips"
+        android:icon="@drawable/ic_trip"
+        android:title="Trips" />
+    <item
+        android:id="@+id/payment"
+        android:icon="@drawable/ic_credit_card"
+        android:title="Payment" />
+    <item
+        android:id="@+id/fav_addresses"
+        android:icon="@drawable/ic_star"
+        android:title="Favourite addresses" />
+    <item
+        android:id="@+id/coupon"
+        android:icon="@drawable/ic_coupon"
+        android:title="Promo code" />
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/ic_notification"
+        android:title="Notifications" />
+    <item
+        android:id="@+id/support"
+        android:icon="@drawable/ic_support"
+        android:title="Support" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
+
+</menu>

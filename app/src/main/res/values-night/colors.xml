@@ -8,13 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#BEBEBE</color>
 
-    <color name="light">#BEBEBE</color>
     <color name="dark">#6C6C6C</color>
     <color name="solid_dark">#2C2C2C</color>
     <color name="grey">#585858</color>
     <color name="light_grey">#BEBEBE</color>
     <color name="green">#00A43E</color>
     <color name="icon_color">#1E1E1E</color>
+    <color name="yellow">#FCE300</color>
+    <color name="white_80_alpha">#BEBEBE</color>
+
 
 
 </resources>

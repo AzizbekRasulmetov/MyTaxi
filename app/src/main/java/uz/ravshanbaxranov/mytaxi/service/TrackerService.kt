@@ -13,12 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.*
 import com.mapbox.geojson.Point
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uz.ravshanbaxranov.mytaxi.data.model.Track
 import uz.ravshanbaxranov.mytaxi.domain.use_case.TrackUseCases
 import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_START
 import uz.ravshanbaxranov.mytaxi.util.Constants.ACTION_SERVICE_STOP
+import uz.ravshanbaxranov.mytaxi.util.Constants.LOCATION_UPDATE_INTERVAL
+import uz.ravshanbaxranov.mytaxi.util.Constants.LOCATION_UPDATE_MAXIMUM_INTERVAL
+import uz.ravshanbaxranov.mytaxi.util.Constants.LOCATION_UPDATE_MINIMUM_INTERVAL
 import uz.ravshanbaxranov.mytaxi.util.Constants.NOTIFICATION_CHANNEL_ID
 import uz.ravshanbaxranov.mytaxi.util.Constants.NOTIFICATION_CHANNEL_NAME
 import uz.ravshanbaxranov.mytaxi.util.Constants.NOTIFICATION_ID
@@ -40,19 +43,17 @@ class TrackerService : LifecycleService() {
 
     companion object {
         var isServiceRunning = false
-        val locationChannel = MutableSharedFlow<Point>()
     }
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
 
-            lifecycleScope.launchWhenCreated {
+            lifecycleScope.launch(Dispatchers.IO) {
                 result.lastLocation.let {
                     updateNotification()
 
-                    val point = Point.fromLngLat(it?.longitude ?: 0.0, it?.latitude ?: 0.0)
-                    locationChannel.emit(point)
+                    Point.fromLngLat(it?.longitude ?: 0.0, it?.latitude ?: 0.0)
                     trackUseCases.addTrack(
                         Track(
                             latitude = it?.longitude ?: 0.0,
@@ -70,9 +71,7 @@ class TrackerService : LifecycleService() {
 
         notification.apply {
             setContentTitle("MyTaxi")
-            setContentText(
-                "Busy"
-            )
+            setContentText("Online")
         }
         notificationManager.notify(NOTIFICATION_ID, notification.build())
 
@@ -81,6 +80,7 @@ class TrackerService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
     }
@@ -89,18 +89,11 @@ class TrackerService : LifecycleService() {
         intent?.let {
             when (it.action) {
                 ACTION_SERVICE_START -> {
-                    lifecycleScope.launch {
-                        startForegroundService()
-                    }
-
+                    startForegroundService()
                 }
                 ACTION_SERVICE_STOP -> {
-                    lifecycleScope.launch {
-                        stopForegroundService()
-                    }
-
+                    stopForegroundService()
                 }
-
                 else -> {
 
                 }
@@ -129,21 +122,26 @@ class TrackerService : LifecycleService() {
         startForeground(NOTIFICATION_ID, notification.build())
         startUpdateLocation()
         isServiceRunning = true
-
     }
+
 
     @SuppressLint("MissingPermission")
     private fun startUpdateLocation() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
-            .setWaitForAccurateLocation(true)
-            .setMinUpdateIntervalMillis(2000)
-            .setMaxUpdateDelayMillis(2000)
-            .build()
+
+        val locationRequest =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, LOCATION_UPDATE_INTERVAL)
+                .setWaitForAccurateLocation(true)
+                .setMinUpdateIntervalMillis(LOCATION_UPDATE_MINIMUM_INTERVAL)
+                .setMaxUpdateDelayMillis(LOCATION_UPDATE_MAXIMUM_INTERVAL)
+                .build()
+
+
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
         )
+
     }
 
 

@@ -1,10 +1,16 @@
 <resources>
     <string name="app_name">MyTaxi</string>
     <string name="mapbox_access_token">sk.eyJ1IjoicmV0cm9maXQiLCJhIjoiY2xmMWJ6ZDBuMDZ4ZDN6cG5oYnU1enV4eCJ9.20omdl3ZFrczxMLinpEguQ</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="border">Бордюр</string>
     <string name="tarif">Тарифы</string>
     <string name="order">Зазказы</string>
+    <string name="title1">Request Ride</string>
+    <string name="subtitle1">Request a ride get picked up by a nearby community driver</string>
+    <string name="title2">Confirm Your Driver</string>
+    <string name="subtitle2">Huge drivers network helps you find comforable, safe and cheap ride</string>
+    <string name="title3">Track your ride</string>
+    <string name="subtitle3">Know your driver in advance and be able to view current location in real time on the map</string>
 
 </resources>

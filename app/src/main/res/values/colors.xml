@@ -8,13 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="light">#FFFFFF</color>
     <color name="dark">#212121</color>
     <color name="grey">#585858</color>
     <color name="solid_dark">#2C2C2C</color>
     <color name="light_grey">#BEBEBE</color>
     <color name="green">#00CA4C</color>
     <color name="icon_color">#FFFFFF</color>
+    <color name="yellow">#FCE300</color>
+    <color name="white_80_alpha">#CCFFFFFF</color>
 
 
 </resources>
