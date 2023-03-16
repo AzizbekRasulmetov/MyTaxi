@@ -20,15 +20,14 @@ MyTaxi is a mobile app designed to help users easily book and track taxis for th
 - Android SDK version 21 or higher
 
 ## Installation
-Clone the repository:
-Installation
-Clone the repository:
-
+- Installation
+- Clone the repository:
 ```
 git clone https://github.com/username/mytaxi.git
 ```
-Open the project in Android Studio.
-Build and run the app on an emulator or a physical device.
+- Open the project in Android Studio.
+- Place your tokens in the necessary places
+- Build and run the app on an emulator or a physical device.
 
 
 ## Usage
