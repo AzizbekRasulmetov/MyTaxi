@@ -17,9 +17,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:mapbox_cameraTargetLat="39.6508"
-            app:mapbox_cameraTargetLng="66.9654"
-            app:mapbox_cameraZoom="10.0" />
+            app:mapbox_cameraTargetLat="41.2995"
+            app:mapbox_cameraTargetLng="69.2401"
+            app:mapbox_cameraZoom="10" />
 
         <RadioGroup
             android:id="@+id/state_rg"
