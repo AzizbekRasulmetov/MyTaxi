@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
@@ -141,12 +142,8 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
             }
             BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.notificationBtn)
         }
-
-
         binding.busyRb.isChecked = !TrackerService.isServiceRunning
         binding.freeRb.isChecked = TrackerService.isServiceRunning
-
-
     }
 
 
@@ -160,6 +157,7 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            Log.d("TAGDF", "onPermissionsDenied: $perms")
             SettingsDialog.Builder(requireContext()).build().show()
         } else {
             checkLocationAndNotificationPermissions(requireContext(), this)
@@ -214,7 +212,6 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
                     mapboxMap.easeTo(cameraOptions)
                 }
             }
-
             override fun onFailure(exception: Exception) {
             }
         })
@@ -228,6 +225,7 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d("TAGDF", "onRequestPermissionsResult: $permissions")
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
