@@ -66,6 +66,7 @@ class MainFragment : Fragment(R.layout.fragment_main), EasyPermissions.Permissio
         setUpMapAndUI()
 
         binding.myLocationBtn.setOnClickListener {
+            checkGpsStatus()
             animateToLocation()
         }
 
