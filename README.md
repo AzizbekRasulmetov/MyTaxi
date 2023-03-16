@@ -43,3 +43,4 @@ MyTaxi uses MapBox to display real-time taxi locations on a map. The app uses Fo
 ## Contributing
 Contributions are welcome! If you have any suggestions or find any bugs, please create an issue or submit a pull request.
  
+## Screenshots![screenshots](https://user-images.githubusercontent.com/76969968/225540268-bb330485-fc81-4077-85d3-880d20e9502f.png)
