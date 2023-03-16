@@ -15,7 +15,7 @@ MyTaxi is a mobile app designed to help users easily book and track taxis for th
 - Permissions
 
 ## Requirements
-- Android Studio 4.0 or higher
+- Android Studio 5.0 or higher
 - Android SDK version 21 or higher
 - Google Play Services SDK
 
